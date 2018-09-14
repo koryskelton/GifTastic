@@ -24,7 +24,6 @@
 
                 <br>
             
-                <!-- Jumbotron Title -->
                 <div class="jumbotron">
                   <h1 class="text-center">Giffaroni</h1>
                   <h3 class="text-center">Click on a button to see something delcious</h3>
@@ -63,7 +62,7 @@
 
             function displaypastaGifs(pastaName) {
                 $.ajax({
-                    url: "https://api.giphy.com/v1/gifs/search?api_key=rdlr2Nj2wp1fOx5N5mQAhK8vCF44NcoR&q=" + pastaName + "&limit=10",
+                    url: "https://api.giphy.com/v1/gifs/search?api_key=qgToXOHzTHGgWAMIUFC8ntOLOLRADEV7&q=" + pastaName + "&limit=10&offset=0&rating=G&lang=en",
                     method: "GET"
                 }).done(function (response) {
 
@@ -71,10 +70,10 @@
                         var newGifBox = $("<div>");
                         var newGif = $("<img>");
                         var newGifRating = $("<p>");
-                            // defaults
+                           
                         newGif.attr("src", response.data[i].images.fixed_height_still.url);
                         newGif.attr("data-state", "still");
-                          // options
+                          
                         newGif.attr("data-still", response.data[i].images.fixed_height_still.url);
                         newGif.attr("data-animate", response.data[i].images.fixed_height.url);
                         newGif.attr("class", "gif");
