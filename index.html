@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+    div{
+        float:left;
+    }</style>
+
+</head>
+
+<body>
+
+        <div class="container">
+
+                <br>
+            
+                <!-- Jumbotron Title -->
+                <div class="jumbotron">
+                  <h1 class="text-center">Giffaroni</h1>
+                  <h3 class="text-center">Click on a button to see something delcious</h3>
+                </div>
+
+    <div id="pasta-buttons"></div>
+    <form id="pasta-form">
+        <label for="pasta-input">Add an pasta!</label>
+        <input type="text" id="pasta-input">
+        <input id="add-pasta" type="submit" value="submit">
+    </form>
+
+    <div id="pastas"></div>
+
+    <script>
+        $(document).ready(function () {
+            var topics = ["lasagne", "spaghetti", "macaroni", "linguine", "tortellini", "fettuccine"]
+
+            function renderButtons() {
+                $("#pasta-buttons").empty();
+                for (let i = 0; i < topics.length; i++) {
+                    var a = $("<button>");
+                    a.text(topics[i]);
+                    a.attr("data-name", topics[i]);
+                    a.addClass("button");
+                    $("#pasta-buttons").append(a);
+                }
+            }
+
+            $("#add-pasta").click(function (e) {
+                e.preventDefault();
+                var newpasta = $("#pasta-input").val().trim();
+                topics.push(newpasta);
+                renderButtons();
+            })
+
+            function displaypastaGifs(pastaName) {
+                $.ajax({
+                    url: "https://api.giphy.com/v1/gifs/search?api_key=rdlr2Nj2wp1fOx5N5mQAhK8vCF44NcoR&q=" + pastaName + "&limit=10",
+                    method: "GET"
+                }).done(function (response) {
+
+                    for (let i = 0; i < response.data.length; i++) {
+                        var newGifBox = $("<div>");
+                        var newGif = $("<img>");
+                        var newGifRating = $("<p>");
+                            // defaults
+                        newGif.attr("src", response.data[i].images.fixed_height_still.url);
+                        newGif.attr("data-state", "still");
+                          // options
+                        newGif.attr("data-still", response.data[i].images.fixed_height_still.url);
+                        newGif.attr("data-animate", response.data[i].images.fixed_height.url);
+                        newGif.attr("class", "gif");
+                        newGifRating.text("Rating: " + response.data[i].rating);
+                        $("#pastas").append(newGifBox);
+                        newGifBox.append(newGifRating);
+                        newGifBox.append(newGif);
+                        
+                    }
+                });
+            }
+
+            $(document).on("click", ".button", function (e) {
+                var name = $(this).attr("data-name"); 
+                $("#pastas").empty();               
+                displaypastaGifs(name);
+            });
+
+            $("#pastas").on("click", ".gif", function () {
+        
+                var state = $(this).attr("data-state");
+
+                var animateUrl = $(this).attr("data-animate");
+                var stillUrl = $(this).attr("data-still");
+                if (state === "still") {
+                    $(this).attr("data-state", "animate");
+                    $(this).attr("src", animateUrl)
+                    
+                }
+                else if (state === "animate") {
+                    $(this).attr("data-state", "still");
+                    $(this).attr("src", stillUrl);
+
+                }
+            })
+
+            renderButtons();
+        })
+    </script>
+
+</body>
+
+</html>
